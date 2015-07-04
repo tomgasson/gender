@@ -254,7 +254,7 @@
 						' | ',
 						_react2['default'].createElement(
 							'a',
-							{ href: 'github' },
+							{ href: 'https://github.com/tomgasson/gender' },
 							'source'
 						)
 					)
@@ -45435,7 +45435,7 @@
 
 
 	// module
-	exports.push([module.id, ".components-Checkbox-index_checkbox_2qH7H {\r\n}", ""]);
+	exports.push([module.id, ".components-Checkbox-index_checkbox_2qH7H {\r\n\tcursor: pointer;\r\n}", ""]);
 
 	// exports
 	exports.locals = {
