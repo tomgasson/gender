@@ -87,7 +87,7 @@ export default class App extends React.Component {
 					<p>Most people are aware of the gender imbalances in their industry. In 2012 the Australian Govenment introduced the <strong>Workplace Gender Equality Act</strong> to monitor these balances. The data is collected annually from all non-public Australian companies with over 100 employees.</p>
 				</div>
 				<div className={styles.footer}>
-					Made by <a href="https://twitter.com/tomgasson">Tom Gasson</a> for <a href="https://www.govhack.org/">GovHack</a> | <a href="https://data.gov.au/dataset/wgea-dataset">data</a> | <a href="github">source</a>
+					Made by <a href="https://twitter.com/tomgasson">Tom Gasson</a> for <a href="https://www.govhack.org/">GovHack</a> | <a href="https://data.gov.au/dataset/wgea-dataset">data</a> | <a href="https://github.com/tomgasson/gender">source</a>
 				</div>
 			</div>
 		)
