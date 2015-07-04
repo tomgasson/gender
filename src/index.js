@@ -9,6 +9,7 @@ import grid from 'grid.css'
 import classnames from 'classnames'
 import 'fonts/volkorn.css'
 import Axis from 'Axis'
+import Checkbox from 'Checkbox'
 
 export default class App extends React.Component {
 	constructor(props){
@@ -18,7 +19,7 @@ export default class App extends React.Component {
 			selected: undefined,
 			view: undefined,
 			grouping: 'class',
-			color:true
+			color:false
 		}
 	}
 	componentDidMount(){
@@ -53,6 +54,9 @@ export default class App extends React.Component {
 	select(item){
 		this.setState({selected:item})
 	}
+	toggle(){
+		this.setState({color:!this.state.color})
+	}
 	render(){
 		let data = this.state.data
 		let plotcls = {}
@@ -75,10 +79,15 @@ export default class App extends React.Component {
 					</SVG>
 				</div>
 				<div className={styles.wrap}>
-					<p className={styles.lead}>Click a bubble to explore the data</p>
-					<p>Many people are aware of the gender imbalances in their own industry. In 2012 the Australian Govenment introduced legislation to track these balances. The data is collected yearly from all Australian companies with over 100 employees.</p>
-					<p>The data is further broken down into the ANZIC industry classification codes.</p>
-					<small>ANZIC publishes these codes, but not in a very nice format. For this project I had to convert them to <a>csv</a>.</small>
+					<div className={styles.lead}>
+						Click a bubble to explore the data
+						<div className={styles.right}><Checkbox checked={this.state.color} toggle={this.toggle.bind(this)} /></div>
+					</div>
+					
+					<p>Most people are aware of the gender imbalances in their industry. In 2012 the Australian Govenment introduced the <strong>Workplace Gender Equality Act</strong> to monitor these balances. The data is collected annually from all non-public Australian companies with over 100 employees.</p>
+				</div>
+				<div className={styles.footer}>
+					Made by <a href="https://twitter.com/tomgasson">Tom Gasson</a> for <a href="https://www.govhack.org/">GovHack</a> | <a href="https://data.gov.au/dataset/wgea-dataset">data</a> | <a href="github">source</a>
 				</div>
 			</div>
 		)

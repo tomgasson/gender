@@ -12,7 +12,7 @@ export default class Toggle {
 	render(){
 		let all
 		if (this.props.all){
-			all = <Button name="ALL" onClick={this.reset.bind(this)} />
+			all = <Button active={!this.props.selected} name="ALL" onClick={this.reset.bind(this)} />
 		}
 		return (
 			<div className={styles.toggles} >

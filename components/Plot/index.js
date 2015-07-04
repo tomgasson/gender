@@ -1,5 +1,7 @@
 import React from 'react'
 import d3 from 'd3'
+import Tip from 'd3-tip'
+import Tooltip from 'Tooltip'
 
 function getValues(tree){
 	if (typeof tree.values.male !== 'undefined'){
@@ -32,6 +34,10 @@ function getDivision(tree){
 
 export default class Plot {
 	componentDidMount(){
+		this.tip = Tip()
+		this.tip.html(d => {
+			return React.renderToString(<Tooltip division={this.props.grouping!=='division'} {...d.values} />)
+		})
 		this.update()
 	}
 	componentDidUpdate(){
@@ -84,7 +90,8 @@ export default class Plot {
 					male,
 					female,
 					total: male + female,
-					division: d[0].division
+					division: d[0].division,
+					name: d[0][this.props.grouping]
 				}
 			})
 			.entries(this.props.data)
@@ -94,12 +101,14 @@ export default class Plot {
 
 		let rscale = d3.scale.linear()
 			.domain([0,10000])
-			.range([3,10])
+			.range([5,10])
 			.clamp(true)
 		
 		var xscale = d3.scale.linear().range([0, this.props.width])
 		
 		let el = d3.select(React.findDOMNode(this))
+
+		el.call(this.tip)
 
 		let divisions = el.selectAll('.division')
 			.data(data, d => d.key)
@@ -107,7 +116,7 @@ export default class Plot {
 		let styleCircle = (sel, type) => {
 			sel.each(d => d._vals = getValues(d))
 				.attr('fill', this.props.color?(d => colors(d.values.division)):(d => color(d._vals.female/d._vals.total)))
-				.attr('fill-opacity', this.props.color?0.8:0.2)
+				.attr('fill-opacity', this.props.color?0.6:0.2)
 				.attr('stroke', this.props.color?(d => colors(d.values.division)):(d => color(d._vals.female/d._vals.total)))
 				.attr('stroke-opacity', 0.3)
 				.attr('cx', d => xscale(d._vals.female/d._vals.total))
@@ -245,7 +254,7 @@ export default class Plot {
 		}
 
 
-		verylast.select('circle').attr('opacity',1)
+		verylast.select('circle').on('mouseover', this.tip.show).on('mouseout', this.tip.hide).attr('opacity',1)
 
 	}
 	render(){

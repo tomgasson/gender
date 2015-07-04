@@ -1,0 +1,36 @@
+.tooltip {
+	background: #f8f8f8;
+	padding: 8px;
+	font-size: 14px;
+	color: #333;
+	min-width: 160px;
+}
+
+.maleicon {
+	color: #0077FF;
+	margin: 8px;
+	font-size: 32px;
+}
+.femaleicon {
+	color: #FF00F2;
+	font-size: 32px;
+	margin: 8px;
+}
+.division {
+	color: #666;
+	font-variant: small-caps;
+}
+.female {
+	float: right;
+}
+.male {
+	float: left;
+}
+.numbers {
+	font-size: 18px;
+}
+.numbers:after {
+	content: '';
+	display: table;
+	clear:both;
+}
