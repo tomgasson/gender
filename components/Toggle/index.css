@@ -1,0 +1,24 @@
+.toggles {
+	display: block;
+	margin: 16px 0;
+	text-align: center;
+}
+.button {
+	cursor: pointer;
+	display: inline-block;
+	text-transform: uppercase;
+	font-size: 12px;
+	margin: 4px 8px;
+	padding: 8px 16px;
+	border: 1px solid #666;
+}
+.button:last-child {
+	margin-right: 0;
+}
+.button:hover{
+	color: #00a7ff;
+	background: rgba(255,255,255,0.2);
+}
+.active {
+	color: #00a7ff;
+}

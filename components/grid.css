@@ -1,0 +1,68 @@
+.row {
+	width: 100%;
+	position: relative;
+	
+}
+.row:after {
+	display: table;
+	content: ' ';
+	clear: both;
+}
+.col {
+	float: left;
+	position: relative;
+	padding-right: 16px;
+	
+}
+.col:last-child {
+	padding-right: 0;
+}
+.col_1_3 {
+	width: 33.3333%
+}
+.col_2_3 {
+	width: 66.6666%;
+}
+.col_1_2 {
+	width: 50%
+}
+.sep {
+	border-bottom: 1px solid #ccc;
+}
+.spaced {
+	margin-top: 16px;
+	position: relative;
+}
+.padded {
+	padding: 16px;
+}
+
+.card {
+	position: relative;
+	background: white;
+	box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+	color: #444;
+}
+/*.card {
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	color: #444;
+}*/
+
+
+.h400 {
+	height: 400px;
+	position: relative;
+}
+.h300 {
+	height: 300px;
+	position: relative;	
+}
+.h200 {
+	height: 200px;
+	position: relative;
+}
+.h100 {
+	height: 100px;
+	position: relative;
+}

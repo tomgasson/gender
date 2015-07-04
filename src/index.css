@@ -1,0 +1,52 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+body {
+	font-family: 'vollkorn';
+	background-color: rgb(11, 10, 11);
+	color: #BEB6B6;
+	font-size: 24px;
+	line-height: 1.53;
+	margin-top: 2em;
+}
+h1 {
+	text-align: center;
+	margin-bottom: 0.5em;
+}
+small {
+	font-size: 14px;
+	color: #999;
+}
+a {
+	color: #00a7ff;
+}
+p {
+	font-size: 16px;
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+.lead {
+	color: #7b7b7b;
+	text-transform: lowercase;
+	font-variant: small-caps;
+}
+.plot {
+	margin: 0 auto;
+	max-width: 1160px;
+	height: 150px;
+	position: relative;
+	margin-bottom: 2em;
+}
+.plotopen {
+	height: 600px;
+}
+
+.wrap {
+	width: 90%;
+	width: calc(100% - 200px);
+	max-width: 960px;
+	margin: 0 auto;
+	position: relative;
+}
