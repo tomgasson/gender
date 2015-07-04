@@ -20,7 +20,7 @@ small {
 	color: #999;
 }
 a {
-	color: #00a7ff;
+	color: rgba(71, 164, 255, 0.87);
 }
 p {
 	font-size: 16px;
@@ -56,7 +56,7 @@ p {
 	position: relative;
 }
 strong {
-	color: #00a7ff;
+	color: rgba(71, 164, 255, 0.87);
 }
 
 .footer {
