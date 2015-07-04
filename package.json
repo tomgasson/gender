@@ -1,13 +1,13 @@
 {
-  "name": "arup-map",
+  "name": "gender-equality",
   "version": "1.0.0",
-  "description": "",
+  "description": "Data visualisation of Gender Equality across australian industries",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tom Gasson <tom@gasson.com.au>",
-  "license": "UNLICENSED",
+  "license": "ISC",
   "dependencies": {
     "babel": "^5.6.14",
     "babel-core": "^5.6.15",
