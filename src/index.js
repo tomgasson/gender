@@ -14,20 +14,19 @@ export default class App extends React.Component {
 	constructor(props){
 		super(props)
 		this.state = {
-			data: [],			
+			data: [],
 			selected: undefined,
 			view: undefined,
-			grouping: 'class'
+			grouping: 'class',
+			color:true
 		}
 	}
 	componentDidMount(){
 		d3.csv('data.csv', data => {
-			
 			d3.csv('codes.csv', codes => {
 				let _classes = d3.nest()
 					.key(d => d.class)
 					.map(codes)
-
 				data = data.map(d => {
 					let extra = _classes[d.class][0]
 					return {
@@ -42,7 +41,6 @@ export default class App extends React.Component {
 					}
 				})
 				this.setState({data})
-
 			})
 		})
 	}
@@ -59,7 +57,8 @@ export default class App extends React.Component {
 		let data = this.state.data
 		let plotcls = {}
 		plotcls[styles.plot] = true
-		plotcls[styles.plotopen] = !!this.state.view
+		plotcls[styles.plotoccupation] = this.state.view==='By occupation'
+		plotcls[styles.plotstatus] = this.state.view==='By employment type'
 		return (
 			<div>
 				<h1>Gender Equality</h1>
@@ -70,14 +69,14 @@ export default class App extends React.Component {
 				<div className={classnames(plotcls)}>
 					<SVG>
 						<Margin>
-							<Plot grouping={this.state.grouping} view={this.state.view} data={data} select={this.select.bind(this)} selected={this.state.selected}/>
+							<Plot color={this.state.color} grouping={this.state.grouping} view={this.state.view} data={data} select={this.select.bind(this)} selected={this.state.selected}/>
 							<Axis />
 						</Margin>
 					</SVG>
 				</div>
 				<div className={styles.wrap}>
+					<p className={styles.lead}>Click a bubble to explore the data</p>
 					<p>Many people are aware of the gender imbalances in their own industry. In 2012 the Australian Govenment introduced legislation to track these balances. The data is collected yearly from all Australian companies with over 100 employees.</p>
-					<p className={styles.lead}>Select an occupation, employment type of click a bubble below to explore the data.</p>
 					<p>The data is further broken down into the ANZIC industry classification codes.</p>
 					<small>ANZIC publishes these codes, but not in a very nice format. For this project I had to convert them to <a>csv</a>.</small>
 				</div>

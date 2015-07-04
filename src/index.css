@@ -37,10 +37,12 @@ p {
 	max-width: 1160px;
 	height: 150px;
 	position: relative;
-	margin-bottom: 2em;
 }
-.plotopen {
+.plotoccupation {
 	height: 600px;
+}
+.plotstatus {
+	height: calc(600px * 5/13);
 }
 
 .wrap {

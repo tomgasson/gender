@@ -19,7 +19,16 @@ function getValues(tree){
 		return out
 	}
 }
+function getDivision(tree){
+	let leaf = tree;
+	while (leaf.values.length > 0){
+		leaf = leaf.values[0]
+	}
 
+	console.log(leaf)
+
+	return leaf.division
+}
 
 export default class Plot {
 	componentDidMount(){
@@ -29,21 +38,44 @@ export default class Plot {
 		this.update()
 	}
 	update(){
+
+		let nest = d3.nest()
+		switch (this.props.grouping){
+			case 'division':
+				nest = nest.key(d => d.division)
+				break;
+			case 'subdivision':
+				nest = nest.key(d => d.division)
+				nest = nest.key(d => d.subdivision)
+				break;
+			case 'group':
+				nest = nest.key(d => d.division)
+				nest = nest.key(d => d.subdivision)
+				nest = nest.key(d => d.group)
+				break;
+			case 'class':
+				nest = nest.key(d => d.division)
+				nest = nest.key(d => d.subdivision)
+				nest = nest.key(d => d.group)
+				nest = nest.key(d => d.class)
+				break;
+		}
+		let colors = d3.scale.category20()
+
 		let yscale = d3.scale.ordinal()
 			.rangeBands([0, this.props.height])
 		switch (this.props.view){
 			case 'By occupation':
 				yscale.domain(_.uniq(_.pluck(this.props.data, 'occupation')))
+				nest = nest.key(d => d.occupation)
 				break;
 			case 'By employment type':
 				yscale.domain(_.uniq(_.pluck(this.props.data, 'employment_status')))
+				nest = nest.key(d => d.employment_status)
 				break;
 		}
-		let data = d3.nest()
-			.key(d => d.division)
-			.key(d => d.subdivision)
-			.key(d => d.group)
-			.key(d => d.class)
+
+		let data = nest
 			.rollup(d => {
 				let male = d3.sum(d.filter(d => d.gender=='Male'), d => +d.number_of_employees)
 				let female = d3.sum(d.filter(d => d.gender=='Female'), d => +d.number_of_employees)
@@ -51,16 +83,18 @@ export default class Plot {
 				return {
 					male,
 					female,
-					total: male + female
+					total: male + female,
+					division: d[0].division
 				}
 			})
 			.entries(this.props.data)
+
 		var color = d3.scale.linear()
 			.range(['#0077FF','#FF00F2'])
 
 		let rscale = d3.scale.linear()
-			.domain([0,100])
-			.range([0,10])
+			.domain([0,10000])
+			.range([3,10])
 			.clamp(true)
 		
 		var xscale = d3.scale.linear().range([0, this.props.width])
@@ -72,14 +106,13 @@ export default class Plot {
 
 		let styleCircle = (sel, type) => {
 			sel.each(d => d._vals = getValues(d))
-				.attr('r', d => rscale(d._vals.total))
-				.attr('fill', d => color(d._vals.female/d._vals.total))
-				.attr('stroke', d => color(d._vals.female/d._vals.total))
+				.attr('fill', this.props.color?(d => colors(d.values.division)):(d => color(d._vals.female/d._vals.total)))
+				.attr('fill-opacity', this.props.color?0.8:0.2)
+				.attr('stroke', this.props.color?(d => colors(d.values.division)):(d => color(d._vals.female/d._vals.total)))
+				.attr('stroke-opacity', 0.3)
 				.attr('cx', d => xscale(d._vals.female/d._vals.total))
-				.attr('cy', this.props.view?yscale('1'):20)
-				.attr('fill-opacity', this.props.selected?(d => this.props.selected===d._vals.key?0.8:0.1):0.2)
+				.attr('cy', this.props.view?(d => yscale.rangeBand()/2 + yscale(d.key)):this.props.height/2)
 				.attr('r', d => rscale(d._vals.total))
-				.attr('opacity',this.props.grouping===type?0.3:0)
 		}
 
 		let divisionsEnter = divisions.enter()
@@ -89,7 +122,8 @@ export default class Plot {
 		divisionsEnter.append('circle')
 			.classed('divisioncircle', true)
 
-		divisions.select('.divisioncircle').call(styleCircle, 'division')
+		divisions.select('.divisioncircle').attr('opacity',0).transition(1000).call(styleCircle, 'division')
+		divisions.exit().remove()
 
 		let subdivisions = divisions.selectAll('.subdivision')
 			.data(d => d.values, d => d.key)
@@ -101,9 +135,12 @@ export default class Plot {
 
 		subdivisionsEnter.append('circle')
 			.classed('subdivisioncircle', true)
+			.attr('cx', function(){ return d3.select(this.parentNode.parentNode).select('circle').attr('cx') })
+			.attr('cy', function(){ return d3.select(this.parentNode.parentNode).select('circle').attr('cy') })
+			.attr('r', function(){ return d3.select(this.parentNode.parentNode).select('circle').attr('r') })
 
-		subdivisions.select('.subdivisioncircle').call(styleCircle, 'subdivision')
-
+		subdivisions.select('.subdivisioncircle').attr('opacity',0).transition(1000).call(styleCircle, 'subdivision')
+		subdivisions.exit().remove()
 		let groups = subdivisions.selectAll('.group')
 			.data(d => d.values, d => d.key)
 		
@@ -114,8 +151,12 @@ export default class Plot {
 
 		groupsEnter.append('circle')
 			.classed('groupcircle', true)
+			.attr('cx', function(){ return d3.select(this.parentNode.parentNode).select('circle').attr('cx') })
+			.attr('cy', function(){ return d3.select(this.parentNode.parentNode).select('circle').attr('cy') })
+			.attr('r', function(){ return d3.select(this.parentNode.parentNode).select('circle').attr('r') })
 
-		groups.select('.groupcircle').call(styleCircle, 'group')
+		groups.select('.groupcircle').attr('opacity',0).transition(1000).call(styleCircle, 'group')
+		groups.exit().remove()
 
 		let classes = groups.selectAll('.class')
 			.data(d => d.values, d => d.key)
@@ -127,8 +168,85 @@ export default class Plot {
 
 		classesEnter.append('circle')
 			.classed('classcircle', true)
+			.attr('cx', function(){ return d3.select(this.parentNode.parentNode).select('circle').attr('cx') })
+			.attr('cy', function(){ return d3.select(this.parentNode.parentNode).select('circle').attr('cy') })
+			.attr('r', function(){ return d3.select(this.parentNode.parentNode).select('circle').attr('r') })
+			
 
-		classes.select('.classcircle').call(styleCircle, 'class')
+		classes.select('.classcircle').attr('opacity',0).transition(1000).call(styleCircle, 'class')
+
+		classes.exit().remove()
+
+		let last = classes
+		switch (this.props.grouping){
+			case 'division':
+				last = divisions
+				break;
+			case 'subdivision':
+				divisions.selectAll('.splits').remove()
+				last = subdivisions
+				break;
+			case 'group':
+				divisions.selectAll('.splits').remove()
+				subdivisions.selectAll('.splits').remove()
+				last = groups
+				break;
+			case 'class':
+				divisions.selectAll('.splits').remove()
+				subdivisions.selectAll('.splits').remove()
+				groups.selectAll('.splits').remove()
+				last = classes
+				break;
+		}
+
+		let verylast = last
+
+		let splits = last.selectAll('.splits')
+			.data(d => d.values, d => d.key)
+		
+		let splitsEnter = splits
+			.enter()
+			.append('g')
+			.classed('splits', true)
+
+		splitsEnter.append('circle')
+			.classed('splitscircle', true)
+			.attr('cx', function(){ return d3.select(this.parentNode.parentNode).select('circle').attr('cx') })
+			.attr('cy', function(){ return d3.select(this.parentNode.parentNode).select('circle').attr('cy') })
+			.attr('r', function(){ return d3.select(this.parentNode.parentNode).select('circle').attr('r') })
+			
+
+		splits.select('.splitscircle').attr('opacity',0).transition(1000).call(styleCircle, 'splits')
+
+		splits.exit().remove()
+
+		if (this.props.view){
+			let labels = el.selectAll('.label')
+				.data(yscale.domain())
+
+			labels
+				.enter()
+				.append('text')
+				.classed('label', true)
+			labels.text(d => d)
+				.attr('fill', '#ccc')
+				.attr('fill-opacity', 0.5)
+				.attr('y', d => yscale(d) + 12)
+				// .attr('x', this.props.width/2)
+				// .attr('text-anchor','middle')
+				.attr('font-size', '12px')
+				.attr('font-family', 'arial')
+
+			labels.exit().remove()
+
+			verylast = splits
+		} else {
+			el.selectAll('.label').remove()
+		}
+
+
+		verylast.select('circle').attr('opacity',1)
+
 	}
 	render(){
 		return <g></g>
