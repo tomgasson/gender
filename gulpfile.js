@@ -1,6 +1,11 @@
 var gulp = require('gulp')
 
-gulp.task('default', ['webpack'])
+gulp.task('default', ['webpack','copy'])
+
+gulp.task('copy', function(){
+	return gulp.src(['src/index.html','data/**/*'])
+		.pipe(gulp.dest('dist'))
+})
 
 gulp.task('watch', ['default'], function(){
 	return gulp.watch(['src/**/*', 'components/**/*'], ['default'])

@@ -8,7 +8,6 @@ export default class Axis {
 		this.update()
 	}
 	update(){
-		console.log('render axis')
 		let scale = d3.scale.linear()
 			.range([0, this.props.width])
 		let axis = d3.svg.axis()
